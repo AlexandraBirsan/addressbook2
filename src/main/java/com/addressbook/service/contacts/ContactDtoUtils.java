@@ -15,10 +15,10 @@ import java.util.List;
 @Component
 public class ContactDtoUtils {
 
-    @Autowired private ContactsServiceImpl contactsServiceImpl;
+    @Autowired private ContactsService contactsService;
 
     public List<ContactDto> getContacts() {
-        List<Contact> contacts = contactsServiceImpl.getAll();
+        List<Contact> contacts = contactsService.getAll();
         List<ContactDto> contactDtos = new ArrayList<>(contacts.size());
         contacts.stream().forEach(contact -> {
             ContactDto contactDto = new ContactDto();

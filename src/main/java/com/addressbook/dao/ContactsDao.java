@@ -2,6 +2,7 @@ package com.addressbook.dao;
 
 import com.addressbook.model.Contact;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**

@@ -5,7 +5,11 @@ import com.addressbook.model.PhoneNumber;
 import oracle.jdbc.OracleTypes;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.io.ByteArrayInputStream;
@@ -42,18 +46,22 @@ public class ContactsDaoImpl implements ContactsDao {
     private DataSource dataSource;
     @Autowired
     private Properties queriesProperties;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public Long createContact(Contact contact) {
-        PreparedStatement insertStatement = null;
         Statement sequenceValue = null;
         Long contactId = null;
         Connection connection = null;
         try {
             String createContactSQL = queriesProperties.getProperty(CREATE_CONTACT);
             String nextValSQL = queriesProperties.getProperty(NEXT_VAL);
-            //connection = DriverManager.getConnection(ConnectionConstants.URL, ConnectionConstants.USERNAME, ConnectionConstants.PASSWORD);
-            connection=dataSource.getConnection();
+            connection = dataSource.getConnection();
             sequenceValue = connection.createStatement();
             synchronized (this) {
                 ResultSet rs = sequenceValue.executeQuery(nextValSQL);
@@ -61,25 +69,17 @@ public class ContactsDaoImpl implements ContactsDao {
                     contactId = rs.getLong(1);
                 }
             }
-            insertStatement = connection.prepareStatement(createContactSQL);
-            insertStatement.setLong(1, contactId);
-            insertStatement.setString(FIRST_NAME_INDEX, contact.getFirstName());
-            insertStatement.setString(LAST_NAME_INDEX, contact.getLastName());
-            insertStatement.setString(COMPANY_INDEX, contact.getCompany());
-            insertStatement.setString(CONTENT_TYPE_INDEX, contact.getContentType());
+            InputStream photoInputStream = null;
             if (contact.getPhoto() != null) {
-                InputStream photoInputStream = new ByteArrayInputStream(contact.getPhoto());
-                insertStatement.setBlob(PHOTO_INDEX, photoInputStream);
-            } else {
-                insertStatement.setBlob(PHOTO_INDEX, (InputStream) null);
+                photoInputStream = new ByteArrayInputStream(contact.getPhoto());
             }
-            insertStatement.executeUpdate();
-
+            Object[] params = new Object[]{contactId, contact.getFirstName(), contact.getLastName(), contact.getCompany(), contact.getContentType(), photoInputStream};
+            int[] types = new int[]{Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.BLOB};
+            jdbcTemplate.update(createContactSQL, params, types);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(JDBC_ERROR_CREATE);
         } finally {
-            DbUtils.closeQuietly(insertStatement);
             DbUtils.closeQuietly(sequenceValue);
             DbUtils.closeQuietly(connection);
         }
@@ -91,7 +91,7 @@ public class ContactsDaoImpl implements ContactsDao {
         Connection connection = null;
         PreparedStatement updateStatement = null;
         try {
-            connection =dataSource.getConnection();
+            connection = dataSource.getConnection();
             updateStatement = connection.prepareStatement(queriesProperties.getProperty(UPDATE_CONTACT));
             updateStatement.setString(FIRST_NAME_INDEX - 1, contact.getFirstName());
             updateStatement.setString(LAST_NAME_INDEX - 1, contact.getLastName());
@@ -120,7 +120,7 @@ public class ContactsDaoImpl implements ContactsDao {
         CallableStatement statement = null;
         Contact contact = null;
         try {
-            connection =dataSource.getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareCall(queriesProperties.getProperty(GET_CONTACT));
             statement.setInt(1, id);
             setOutputParameters(statement);

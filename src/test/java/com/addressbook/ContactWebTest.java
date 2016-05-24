@@ -1,6 +1,7 @@
 package com.addressbook;
 
 import com.addressbook.dto.AllContactResponseDto;
+import com.addressbook.dto.ContactDto;
 import com.addressbook.exceptions.ValidationException;
 import com.addressbook.model.Contact;
 import com.addressbook.model.PhoneNumber;
@@ -28,14 +29,10 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:application-context.xml")
 public class ContactWebTest {
-    @Autowired
-    private ContactsWebService contactsWebService;
-    @Autowired
-    private ContactDtoUtils contactsDtoUtilsMock;
-    @Autowired
-    private ContactsService contactsServiceMock;
-    @Autowired
-    ContactValidator contactsValidatorMock;
+    @Autowired private ContactsWebService contactsWebService;
+    @Autowired private ContactDtoUtils contactsDtoUtilsMock;
+    @Autowired private ContactsService contactsServiceMock;
+    @Autowired private ContactValidator contactsValidatorMock;
 
     private static final String VALID_NAME = "Name";
     private static final String VALID_COMPANY = "company";
@@ -44,9 +41,12 @@ public class ContactWebTest {
     @Test
     public void getAllContactSuccessfully() {
         EasyMock.reset(contactsDtoUtilsMock);
-        EasyMock.expect(contactsDtoUtilsMock.getContacts()).andReturn(new ArrayList<>(2));
+        ArrayList<ContactDto> contacts = new ArrayList<>();
+        contacts.add(new ContactDto());
+        contacts.add(new ContactDto());
+        EasyMock.expect(contactsDtoUtilsMock.getContacts()).andReturn(contacts);
         EasyMock.replay(contactsDtoUtilsMock);
-        Assert.assertEquals(contactsWebService.getAll().getData().size(), 2);
+        Assert.assertEquals(2, contactsWebService.getAll().getData().size());
     }
 
     @Test
@@ -84,8 +84,8 @@ public class ContactWebTest {
         contactsValidatorMock.validateContact(contact);
         EasyMock.expectLastCall().andThrow(new ValidationException());
         EasyMock.replay(contactsValidatorMock);
-        Response actualResp=contactsWebService.create(contact);
-        Assert.assertEquals(409,actualResp.getStatus());
+        Response actualResp = contactsWebService.create(contact);
+        Assert.assertEquals(409, actualResp.getStatus());
     }
 
     @Test
@@ -96,7 +96,7 @@ public class ContactWebTest {
         EasyMock.reset(contactsServiceMock);
         contactsServiceMock.updateContact(dummyContact());
         EasyMock.replay(contactsServiceMock);
-        Assert.assertEquals(200,contactsWebService.update(dummyContact()).getStatus());
+        Assert.assertEquals(200, contactsWebService.update(dummyContact()).getStatus());
     }
 
     @Test
@@ -106,13 +106,13 @@ public class ContactWebTest {
         contactsValidatorMock.validateContact(contact);
         EasyMock.expectLastCall().andThrow(new ValidationException());
         EasyMock.replay(contactsValidatorMock);
-        Assert.assertEquals(409,contactsWebService.create(contact).getStatus());
+        Assert.assertEquals(409, contactsWebService.create(contact).getStatus());
     }
 
     @Test
     public void deleteValidContact() {
         contactsWebService.delete(null/*any*/);
-        Assert.assertEquals(200,contactsWebService.update(dummyContact()).getStatus());
+        Assert.assertEquals(200, contactsWebService.update(dummyContact()).getStatus());
     }
 
     @Test
@@ -122,7 +122,7 @@ public class ContactWebTest {
         contactsServiceMock.deleteContact(id);
         EasyMock.expectLastCall().andThrow(new RuntimeException("simulated Exception"));
         EasyMock.replay(contactsServiceMock);
-        Assert.assertEquals(500,contactsWebService.delete(id).getStatus());
+        Assert.assertEquals(500, contactsWebService.delete(id).getStatus());
     }
 
     private Contact dummyContact() {
