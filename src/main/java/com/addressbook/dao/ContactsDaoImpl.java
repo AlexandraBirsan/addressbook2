@@ -4,7 +4,11 @@ import com.addressbook.model.Contact;
 import com.addressbook.model.PhoneNumber;
 import oracle.jdbc.OracleTypes;
 import org.apache.commons.dbutils.DbUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Component;
@@ -22,7 +26,7 @@ import java.util.Properties;
 /**
  * Created by birsan on 4/26/2016.
  */
-@Component("contactsDao")
+//@Component("contactsDao")
 public class ContactsDaoImpl implements ContactsDao {
 
     private static final int FIRST_NAME_INDEX = 2;
@@ -49,9 +53,12 @@ public class ContactsDaoImpl implements ContactsDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
+
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Override
     public Long createContact(Contact contact) {
@@ -197,27 +204,33 @@ public class ContactsDaoImpl implements ContactsDao {
 
     @Override
     public List<Contact> getAll() {
-        Connection connection = null;
-        Statement statement = null;
-        List<Contact> contacts = null;
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(queriesProperties.getProperty(GET_ALL_CONTACTS));
-            contacts = new ArrayList<>();
-            while (rs.next()) {
-                Integer idContact = rs.getInt(1);
-                Contact contact = getContact(idContact);
-                contact.setId(idContact);
-                contacts.add(contact);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(JDBC_ERROR_GET_ALL);
-        } finally {
-            DbUtils.closeQuietly(statement);
-            DbUtils.closeQuietly(connection);
-        }
+//        Connection connection = null;
+//        Statement statement = null;
+//        List<Contact> contacts = null;
+//        try {
+//            connection = dataSource.getConnection();
+//            statement = connection.createStatement();
+//            ResultSet rs = statement.executeQuery(queriesProperties.getProperty(GET_ALL_CONTACTS));
+//            contacts = new ArrayList<>();
+//            while (rs.next()) {
+//                Integer idContact = rs.getInt(1);
+//                Contact contact = getContact(idContact);
+//                contact.setId(idContact);
+//                contacts.add(contact);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(JDBC_ERROR_GET_ALL);
+//        } finally {
+//            DbUtils.closeQuietly(statement);
+//            DbUtils.closeQuietly(connection);
+//        }
+//        return contacts;
+        Session session = sessionFactory.getCurrentSession();
+        // session.beginTransaction();
+        Criteria criteria = session.createCriteria(Contact.class);
+        List<Contact> contacts = (List<Contact>) criteria.list();
+        //   session.getTransaction().commit();
         return contacts;
     }
 
