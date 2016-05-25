@@ -1,10 +1,18 @@
 package com.addressbook.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Created by birsan on 4/11/2016.
  */
+@Entity
+@Table(name = "ADDRESSBOOK_PHONENUMBERS")
 public class PhoneNumber {
+    @Column(name = "AP_CONTACT_ID")
     private long contactId;
+    @Column(name = "AP_NUMBER")
     private String number;
 
     public long getContactId() {
