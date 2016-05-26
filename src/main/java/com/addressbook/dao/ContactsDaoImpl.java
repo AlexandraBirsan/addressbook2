@@ -7,6 +7,7 @@ import org.apache.commons.dbutils.DbUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,7 +27,8 @@ import java.util.Properties;
 /**
  * Created by birsan on 4/26/2016.
  */
-//@Component("contactsDao")
+@Component("contactsDao")
+@Transactional
 public class ContactsDaoImpl implements ContactsDao {
 
     private static final int FIRST_NAME_INDEX = 2;
@@ -53,44 +55,26 @@ public class ContactsDaoImpl implements ContactsDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
     @Autowired
     private SessionFactory sessionFactory;
 
     @Override
     public Long createContact(Contact contact) {
-        Statement sequenceValue = null;
-        Long contactId = null;
-        Connection connection = null;
-        try {
-            String createContactSQL = queriesProperties.getProperty(CREATE_CONTACT);
-            String nextValSQL = queriesProperties.getProperty(NEXT_VAL);
-            connection = dataSource.getConnection();
-            sequenceValue = connection.createStatement();
-            synchronized (this) {
-                ResultSet rs = sequenceValue.executeQuery(nextValSQL);
-                if (rs.next()) {
-                    contactId = rs.getLong(1);
-                }
+        Session session=sessionFactory.getCurrentSession();
+        session.save(contact);
+        session.flush();
+        Integer contactId = contact.getId();
+        for(int i=0;i<contact.getPhoneNumbers().size();i++){
+            PhoneNumber number=contact.getPhoneNumbers().get(i);
+            number.setContactId(contactId);
+            session.save(number);
+            if(i%50==0){
+                session.flush();
+                session.clear();
             }
-            InputStream photoInputStream = null;
-            if (contact.getPhoto() != null) {
-                photoInputStream = new ByteArrayInputStream(contact.getPhoto());
-            }
-            Object[] params = new Object[]{contactId, contact.getFirstName(), contact.getLastName(), contact.getCompany(), contact.getContentType(), photoInputStream};
-            int[] types = new int[]{Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.BLOB};
-            jdbcTemplate.update(createContactSQL, params, types);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(JDBC_ERROR_CREATE);
-        } finally {
-            DbUtils.closeQuietly(sequenceValue);
-            DbUtils.closeQuietly(connection);
         }
-        return contactId;
+       // session.flush();
+        return new Long("12");
     }
 
     @Override
@@ -123,43 +107,12 @@ public class ContactsDaoImpl implements ContactsDao {
 
     @Override
     public Contact getContact(Integer id) {
-        Connection connection = null;
-        CallableStatement statement = null;
-        Contact contact = null;
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareCall(queriesProperties.getProperty(GET_CONTACT));
-            statement.setInt(1, id);
-            setOutputParameters(statement);
-            statement.execute();
-            String firstName = statement.getString(FIRST_NAME_INDEX);
-            String lastName = statement.getString(LAST_NAME_INDEX);
-            String company = statement.getString(COMPANY_INDEX);
-            Blob photo = statement.getBlob(PHOTO_INDEX);
-            String contentType = statement.getString(CONTENT_TYPE_INDEX);
-            ResultSet phoneResultSet = (ResultSet) statement.getObject(PHONE_CURSOR_INDEX);
-            List<PhoneNumber> phoneNumbers = buildPhoneNumbersFromResultSet(id, phoneResultSet);
-            contact = new Contact();
-            contact.setFirstName(firstName);
-            contact.setLastName(lastName);
-            contact.setCompany(company);
-            if (photo == null) {
-                contact.setPhoto(null);
-                contact.setContentType(null);
-            } else {
-                contact.setPhoto(photo.getBytes(1, (int) photo.length()));
-                contact.setContentType(contentType);
-            }
-            if (phoneNumbers == null)
-                phoneNumbers = new ArrayList<>();
-            contact.setPhoneNumbers(phoneNumbers);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(JDBC_ERROR_GET);
-        } finally {
-            DbUtils.closeQuietly(statement);
-            DbUtils.closeQuietly(connection);
-        }
+        Session session=sessionFactory.getCurrentSession();
+        Criteria criteria=session.createCriteria(Contact.class).add(Restrictions.eq("id",id));
+        Contact contact=(Contact)criteria.list().get(0);
+        Criteria criteriaContactPhone=session.createCriteria(PhoneNumber.class).add(Restrictions.eq("contactId",id));
+        List<PhoneNumber> phoneNumbers=criteriaContactPhone.list();
+        contact.setPhoneNumbers(phoneNumbers);
         return contact;
     }
 
@@ -185,52 +138,20 @@ public class ContactsDaoImpl implements ContactsDao {
 
     @Override
     public void deleteContact(Integer id) {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(queriesProperties.getProperty(DELETE));
-            statement.setInt(1, id);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(JDBC_ERROR_DELETE);
-        } finally {
-            DbUtils.closeQuietly(statement);
-            DbUtils.closeQuietly(connection);
-        }
-
+        Session session=sessionFactory.getCurrentSession();
+        session.delete(getContact(id));
     }
 
     @Override
     public List<Contact> getAll() {
-//        Connection connection = null;
-//        Statement statement = null;
-//        List<Contact> contacts = null;
-//        try {
-//            connection = dataSource.getConnection();
-//            statement = connection.createStatement();
-//            ResultSet rs = statement.executeQuery(queriesProperties.getProperty(GET_ALL_CONTACTS));
-//            contacts = new ArrayList<>();
-//            while (rs.next()) {
-//                Integer idContact = rs.getInt(1);
-//                Contact contact = getContact(idContact);
-//                contact.setId(idContact);
-//                contacts.add(contact);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException(JDBC_ERROR_GET_ALL);
-//        } finally {
-//            DbUtils.closeQuietly(statement);
-//            DbUtils.closeQuietly(connection);
-//        }
-//        return contacts;
         Session session = sessionFactory.getCurrentSession();
-        // session.beginTransaction();
         Criteria criteria = session.createCriteria(Contact.class);
-        List<Contact> contacts = (List<Contact>) criteria.list();
-        //   session.getTransaction().commit();
+        List<Contact> contacts=criteria.list();
+       for (Contact contact:contacts){
+           Criteria criteriaContactPhone=session.createCriteria(PhoneNumber.class).add(Restrictions.eq("contactId",contact.getId()));
+           List<PhoneNumber> phoneNumbers=criteriaContactPhone.list();
+           contact.setPhoneNumbers(phoneNumbers);
+       }
         return contacts;
     }
 

@@ -3,8 +3,10 @@ package com.addressbook.dao;
 import com.addressbook.model.Contact;
 import com.addressbook.model.PhoneNumber;
 import org.apache.commons.dbutils.DbUtils;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -17,6 +19,7 @@ import java.util.Properties;
  * Created by birsan on 4/27/2016.
  */
 @Component("phoneNumberDao")
+@Transactional
 public class PhoneNumberDaoImpl implements PhoneNumberDao {
     private static final String UPDATE_PHONE_NUMBERS = "updatePhoneNumbers";
     private static final String DELETE_UPDATE_PHONE_NUMBERS = "deleteBeforeUpdatePhoneNumbers";
@@ -25,6 +28,8 @@ public class PhoneNumberDaoImpl implements PhoneNumberDao {
     private DataSource dataSource;
     @Autowired
     private Properties queriesProperties;
+    @Autowired
+    private SessionFactory sessionFactory;
     @Override
     public void createPhoneNumbers(Long id, List<PhoneNumber> phoneNumbers) {
         Connection connection = null;
@@ -55,11 +60,11 @@ public class PhoneNumberDaoImpl implements PhoneNumberDao {
         try {
             connection = dataSource.getConnection();
             deleteStatement = connection.prepareStatement(queriesProperties.getProperty(DELETE_UPDATE_PHONE_NUMBERS));
-            deleteStatement.setInt(1, contact.getId());
+            deleteStatement.setLong(1, contact.getId());
             deleteStatement.executeUpdate();
             updateStatement = connection.prepareStatement(queriesProperties.getProperty(DELETE_UPDATE_PHONE_NUMBERS));
             for (int i = 0; i < contact.getPhoneNumbers().size(); i++) {
-                updateStatement.setInt(1, contact.getId());
+                updateStatement.setLong(1, contact.getId());
                 updateStatement.setString(2, contact.getPhoneNumbers().get(i).getNumber());
                 updateStatement.addBatch();
             }

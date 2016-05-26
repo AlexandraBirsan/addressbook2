@@ -10,7 +10,7 @@ public abstract class AbstractContactDTO {
     protected String company;
     protected String phoneNumber;
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 

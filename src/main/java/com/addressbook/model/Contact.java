@@ -1,6 +1,9 @@
 package com.addressbook.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,9 +11,10 @@ import java.util.List;
  */
 @Entity
 @Table(name = "ADDRESSBOOK_CONTACTS")
-public class Contact {
+public class Contact{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator ="contacts_sequence")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "generator")
+    @SequenceGenerator(name = "generator", sequenceName = "CONTACTS_SEQUENCE")
     @Column(name = "AC_CONTACT_ID")
     private Integer id;
     @Column(name = "AC_FIRST_NAME")
@@ -23,8 +27,7 @@ public class Contact {
     private String contentType;
     @Column(name = "AC_PHOTO")
     private byte[] photo;
-    @OneToMany
-    @JoinColumn(name="AP_CONTACT_ID")
+    @Transient
     private List<PhoneNumber> phoneNumbers;
 
     public String getContentType() {

@@ -1,8 +1,7 @@
 package com.addressbook.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by birsan on 4/11/2016.
@@ -10,8 +9,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ADDRESSBOOK_PHONENUMBERS")
 public class PhoneNumber {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "generator")
+    @SequenceGenerator(name = "generator", sequenceName = "phonenumbers_sequence")
+    @Column(name = "AP_ID")
+    private Integer phoneId;
     @Column(name = "AP_CONTACT_ID")
-    private long contactId;
+    private Integer contactId;
     @Column(name = "AP_NUMBER")
     private String number;
 
@@ -19,7 +23,7 @@ public class PhoneNumber {
         return contactId;
     }
 
-    public PhoneNumber setContactId(long contactId) {
+    public PhoneNumber setContactId(Integer contactId) {
         this.contactId = contactId;
         return this;
     }

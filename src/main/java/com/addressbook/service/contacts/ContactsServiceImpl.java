@@ -3,6 +3,7 @@ package com.addressbook.service.contacts;
 import com.addressbook.dao.ContactsDao;
 import com.addressbook.dao.PhoneNumberDao;
 import com.addressbook.model.Contact;
+import com.addressbook.model.PhoneNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,8 +27,7 @@ public class ContactsServiceImpl implements ContactsService {
     @Transactional()
     public void createContact(Contact contact) {
         Long id = contactsDao.createContact(contact);
-        int i = 1 / 0;
-        phoneNumberDao.createPhoneNumbers(id, contact.getPhoneNumbers());
+       // phoneNumberDao.createPhoneNumbers(id, contact.getPhoneNumbers());
     }
 
     @Override

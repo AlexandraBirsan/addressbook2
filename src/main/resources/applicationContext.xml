@@ -22,13 +22,11 @@
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.jdbc.batch_size">50</prop>
             </props>
         </property>
     </bean>
     <context:component-scan base-package="com.addressbook"/>
-    <bean id="contactDao" class="com.addressbook.dao.ContactsDaoImpl">
-        <property name="sessionFactory" ref="sessionFactory"></property>
-    </bean>
     <context:annotation-config/>
     <util:properties id="queriesProperties" location="classpath:sql/queries.properties"/>
     <!--<context:property-placeholder location="classpath:sql/queries.properties"/>-->
