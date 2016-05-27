@@ -17,7 +17,6 @@
                 <value>com.addressbook.model.Contact</value>
             </list>
         </property>
-        <!--<property name="packagesToScan" value="com.addressbook.model"></property>-->
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
@@ -34,11 +33,6 @@
         <property name="locations" value="classpath:sql/connection.properties"/>
     </bean>
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
-
-    <!--<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
-        <!--<property name="dataSource" ref="dataSource"></property>-->
-    <!--</bean>-->
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory" />

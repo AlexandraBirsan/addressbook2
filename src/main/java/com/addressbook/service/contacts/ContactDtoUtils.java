@@ -15,7 +15,8 @@ import java.util.List;
 @Component
 public class ContactDtoUtils {
 
-    @Autowired private ContactsService contactsService;
+    @Autowired
+    private ContactsService contactsService;
 
     public List<ContactDto> getContacts() {
         List<Contact> contacts = contactsService.getAll();

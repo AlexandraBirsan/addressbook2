@@ -19,6 +19,14 @@ public class PhoneNumber {
     @Column(name = "AP_NUMBER")
     private String number;
 
+    public Integer getPhoneId() {
+        return phoneId;
+    }
+
+    public void setPhoneId(Integer phoneId) {
+        this.phoneId = phoneId;
+    }
+
     public long getContactId() {
         return contactId;
     }

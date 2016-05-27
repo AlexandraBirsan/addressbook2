@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "ADDRESSBOOK_CONTACTS")
-public class Contact{
+public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "generator")
     @SequenceGenerator(name = "generator", sequenceName = "CONTACTS_SEQUENCE")

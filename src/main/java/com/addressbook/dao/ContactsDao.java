@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public interface ContactsDao {
-    Long createContact(Contact contact);
+    void createContact(Contact contact);
     void updateContact(Contact contact);
     Contact getContact(Integer id);
     void deleteContact(Integer id);
