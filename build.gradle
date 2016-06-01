@@ -22,5 +22,6 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-jdbc', version: '4.1.7.RELEASE'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '3.6.3.Final'
     compile group: 'org.springframework', name: 'spring-orm', version: '4.1.7.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-core', version: '4.1.0.RELEASE'
     compile files('libs/ojdbc6.jar')
 }

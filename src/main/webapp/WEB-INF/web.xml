@@ -10,6 +10,10 @@
 			<param-name>javax.ws.rs.Application</param-name>
 			<param-value>com.addressbook.config.JsonApplication</param-value>
 		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+			<param-value>com.addressbook.filters.AuthenticationFilter</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>

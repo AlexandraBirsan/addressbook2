@@ -1,7 +1,7 @@
 /**
  * Created by birsan on 4/13/2016.
  */
-
+var AUTH_TOKEN = "AuthToken";
 var INPUT_WITH_ADD_BUTTON = "<input type='button' onclick='addPhoneNumber()' value='+'/>"
 
 function createOrUpdateContact() {
@@ -73,7 +73,10 @@ function loadDataTable() {
     $('#listTable').DataTable({
         "processing": true,
         "serverSide": false,
-        "ajax": "addressbook/api/contacts",
+        "ajax":{
+            url: "addressbook/api/contacts",
+            headers: {  "AuthToken": getCookie(COOKIE_NAME)}
+        },
         "columns": [
             {"data": "company"},
             {"data": "firstName"},

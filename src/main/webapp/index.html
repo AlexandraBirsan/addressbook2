@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <link rel="icon" href="resources/images/contacts.jpg"/>
     <script type="text/javascript" src="scripts/lib/jquery.js"></script>
+    <script type="text/javascript" src="scripts/globals.js"></script>
     <script type="text/javascript" src="scripts/lib/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="scripts/tableUtils.js"></script>
     <script type="text/javascript" src="scripts/ajax.js"></script>
+    <script type="text/javascript" src="scripts/user.js"></script>
     <script type="text/javascript" src="scripts/contact.js"></script>
     <link rel="stylesheet" type="text/css" href="resources/css/main.css"/>
     <link rel="stylesheet" type="text/css" href="resources/css/lib/jquery.dataTables.min.css"/>
@@ -26,6 +28,8 @@
     </thead>
 </table>
 <button id="visibleCreate">Contact Form</button>
+<!--<button id="exportData" onclick="exportData()">Export data</button>-->
+<a href="addressbook/api/contacts/file">Export Data</a>
 <br><br>
 
 <div id="ContactDiv">
@@ -46,10 +50,10 @@
             <td><label for="company">Company</label></td>
             <td><input id="company" type="text" value="--company--"/></td>
         </tr>
-        <!--<tr>-->
-        <!--<td><label>Profile Photo</label></td>-->
-        <!--<td><input type="file"/></td>-->
-        <!--</tr>-->
+        <tr>
+        <td><label>Profile Photo</label></td>
+        <td><input type="file"/></td>
+        </tr>
         <tr>
             <td><label for="phoneNumTable">PhoneNumber</label></td>
             <td>

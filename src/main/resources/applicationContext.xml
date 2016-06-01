@@ -15,6 +15,7 @@
             <list>
                 <value>com.addressbook.model.PhoneNumber</value>
                 <value>com.addressbook.model.Contact</value>
+                <value>com.addressbook.model.User</value>
             </list>
         </property>
         <property name="hibernateProperties">

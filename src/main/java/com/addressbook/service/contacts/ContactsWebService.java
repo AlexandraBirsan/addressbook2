@@ -4,6 +4,8 @@ import com.addressbook.dto.AllContactResponseDto;
 import com.addressbook.dto.ContactDto;
 import com.addressbook.exceptions.ValidationException;
 import com.addressbook.model.Contact;
+import com.addressbook.model.Credentials;
+import com.addressbook.model.User;
 import com.addressbook.validators.ContactValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -22,12 +28,21 @@ import java.util.List;
 @Path("/api/contacts")
 public class ContactsWebService {
 
+    public static final String FILE_NAME = "allContacts";
     private static final String CONTACT_DELETED = "Contact successfully deleted.";
     private static final String CONTACT_NOT_DELETED = "Could not delete the contact.";
     private static final String CONTACT_NOT_UPDATED = "Could not update the contact.";
     private static final String CONTACT_UPDATED = "Contact successfully updated.";
     private static final String CONTACT_NOT_CREATED = "Could not create the contact!";
     private static final String CONTACT_CREATED = "Contact successfully created.";
+    public static final String FILE_EXTENSION = ".txt";
+    public static final String FIRST_NAME = "\tFirst name: ";
+    public static final String LAST_NAME = "\tLast name: ";
+    public static final String COMPANY = "\tCompany: ";
+    public static final String PHONE_NUMBERS = "\t PhoneNumbers: ";
+    public static final String CONTACT_NR = "Contact nr ";
+    public static final String CONTENT_DISPOSITION = "Content-Disposition";
+    public static final String ATTACHMENT_FILENAME = "attachment; filename=";
     @Autowired
     private ContactsService contactsService;
     @Autowired
@@ -35,12 +50,13 @@ public class ContactsWebService {
     @Autowired
     private ContactValidator contactValidator;
 
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public AllContactResponseDto getAll() {
         try {
-            List<ContactDto> contacts = contactDtoUtils.getContacts();
-            AllContactResponseDto responseDTO = new AllContactResponseDto();
+                List<ContactDto> contacts = contactDtoUtils.getContacts();
+                AllContactResponseDto responseDTO = new AllContactResponseDto();
             responseDTO.setData(contacts);
             return responseDTO;
         } catch (Exception ex) {
@@ -94,6 +110,30 @@ public class ContactsWebService {
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(CONTACT_NOT_DELETED + e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/file")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getFile() {
+        try {
+            File temp = File.createTempFile(FILE_NAME, FILE_EXTENSION);
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(temp));
+            List<ContactDto> contacts = contactDtoUtils.getContacts();
+            for (ContactDto contact : contacts) {
+                String contactText = CONTACT_NR + contacts.indexOf(contact) + ": " + FIRST_NAME + contact.getFirstName() +
+                        LAST_NAME + contact.getLastName() + COMPANY + contact.getCompany() + PHONE_NUMBERS + contact.getPhoneNumber();
+                bufferedWriter.write(contactText);
+                bufferedWriter.newLine();
+            }
+            bufferedWriter.close();
+            Response.ResponseBuilder response = Response.ok(temp);
+            response.header(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + temp.getName());
+            return response.build();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

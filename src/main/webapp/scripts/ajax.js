@@ -1,11 +1,11 @@
 /**
  * Created by birsan on 4/13/2016.
  */
-
 function invokeCreateContact(data) {
     $.ajax({
         url: "addressbook/api/contacts",
         type: "POST",
+        headers: {"AuthToken": getCookie(COOKIE_NAME)},
         data: JSON.stringify(data),
         processData: false,
         contentType: "application/json; charset=utf-8",
@@ -24,6 +24,7 @@ function invokeUpdateContact(data) {
     $.ajax({
         url: "addressbook/api/contacts",
         type: "PUT",
+        headers: { "AuthToken": getCookie(COOKIE_NAME)},
         data: JSON.stringify(data),
         processData: false,
         contentType: "application/json; charset=utf-8",
@@ -43,6 +44,7 @@ function invokeDeleteContact(object) {
     $.ajax({
         url: "addressbook/api/contacts/" + id,
         type: "DELETE",
+        headers: { "AuthToken": getCookie(COOKIE_NAME)},
         success: function (response) {
             reloadDataTable();
         },
@@ -50,5 +52,5 @@ function invokeDeleteContact(object) {
             alert(xhr.responseText);
         }
     });
-
 }
+
