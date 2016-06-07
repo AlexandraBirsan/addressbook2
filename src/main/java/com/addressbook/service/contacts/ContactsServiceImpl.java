@@ -26,7 +26,6 @@ public class ContactsServiceImpl implements ContactsService {
     @Transactional()
     public void createContact(Contact contact) {
         Long id = contactsDao.createContact(contact);
-        int i = 1 / 0;
         phoneNumberDao.createPhoneNumbers(id, contact.getPhoneNumbers());
     }
 

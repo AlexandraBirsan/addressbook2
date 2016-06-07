@@ -10,24 +10,9 @@
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
         <sourceRoots>
-          <root url="file://$MODULE_DIR$/src/main/java" />
           <root url="file://$MODULE_DIR$/src/main/resources" />
+          <root url="file://$MODULE_DIR$/src/main/java" />
         </sourceRoots>
-      </configuration>
-    </facet>
-    <facet type="Spring" name="Spring">
-      <configuration>
-        <fileset id="fileset" name="Spring Application Context" removed="false">
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext.xml</file>
-        </fileset>
-      </configuration>
-    </facet>
-    <facet type="hibernate" name="Hibernate">
-      <configuration>
-        <datasource-map>
-          <unit-entry name="sessionFactory" value="dataSource" />
-        </datasource-map>
-        <naming-strategy-map />
       </configuration>
     </facet>
   </component>
@@ -48,13 +33,18 @@
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.containers:jersey-container-servlet:2.17" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.media:jersey-media-json-jackson:2.17" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-web:4.1.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-tx:4.1.7.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-test:4.1.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-context:4.1.7.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.ext:jersey-spring3:2.17" level="project" />
     <orderEntry type="library" name="Gradle: commons-dbutils:commons-dbutils:1.2" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.0" level="project" />
     <orderEntry type="library" name="Gradle: commons-dbcp:commons-dbcp:1.4" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.9" level="project" />
     <orderEntry type="library" name="Gradle: org.easymock:easymock:3.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-jdbc:4.1.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: org.hibernate:hibernate-core:3.6.3.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-orm:4.1.7.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.containers:jersey-container-servlet-core:2.17" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.core:jersey-common:2.17" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.core:jersey-server:2.17" level="project" />
@@ -64,13 +54,22 @@
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.3.2" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.3.2" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-aop:4.1.7.RELEASE" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-context:4.1.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-beans:4.1.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-core:4.1.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-expression:4.1.7.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2:hk2:2.4.0-b10" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2:spring-bridge:2.4.0-b10" level="project" />
     <orderEntry type="library" name="Gradle: commons-pool:commons-pool:1.5.4" level="project" />
     <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest-core:1.1" level="project" />
     <orderEntry type="library" name="Gradle: cglib:cglib-nodep:2.2.2" level="project" />
     <orderEntry type="library" name="Gradle: org.objenesis:objenesis:1.2" level="project" />
+    <orderEntry type="library" name="Gradle: antlr:antlr:2.7.6" level="project" />
+    <orderEntry type="library" name="Gradle: commons-collections:commons-collections:3.1" level="project" />
+    <orderEntry type="library" name="Gradle: dom4j:dom4j:1.6.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.hibernate:hibernate-commons-annotations:3.2.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: javax.transaction:jta:1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.6.1" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2.external:javax.inject:2.4.0-b10" level="project" />
     <orderEntry type="library" name="Gradle: javax.annotation:javax.annotation-api:1.2" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.bundles.repackaged:jersey-guava:2.17" level="project" />
@@ -83,6 +82,7 @@
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.3.2" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.3.2" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.3.2" level="project" />
+    <orderEntry type="library" name="Gradle: aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2:hk2-utils:2.4.0-b10" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2:config-types:2.4.0-b10" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2:core:2.4.0-b10" level="project" />
@@ -91,12 +91,11 @@
     <orderEntry type="library" name="Gradle: org.glassfish.hk2:class-model:2.4.0-b10" level="project" />
     <orderEntry type="library" name="Gradle: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2.external:aopalliance-repackaged:2.4.0-b10" level="project" />
+    <orderEntry type="library" name="Gradle: org.javassist:javassist:3.18.1-GA" level="project" />
     <orderEntry type="library" name="Gradle: org.jvnet:tiger-types:1.4" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2.external:bean-validator:2.4.0-b10" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2.external:asm-all-repackaged:2.4.0-b10" level="project" />
     <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
-    <orderEntry type="library" name="Gradle: aopalliance:aopalliance:1.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-expression:4.1.7.RELEASE" level="project" />
     <orderEntry type="module-library">
       <library name="Gradle: ojdbc6">
         <CLASSES>
@@ -106,19 +105,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Gradle: dom4j:dom4j:1.6.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-tx:4.1.7.RELEASE" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-jdbc:4.1.7.RELEASE" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-orm:4.1.7.RELEASE" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-beans:4.1.7.RELEASE" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-core:4.1.7.RELEASE" level="project" />
-    <orderEntry type="library" name="Gradle: org.javassist:javassist:3.18.1-GA" level="project" />
-    <orderEntry type="library" name="Gradle: org.hibernate:hibernate-core:3.6.3.Final" level="project" />
-    <orderEntry type="library" name="Gradle: antlr:antlr:2.7.6" level="project" />
-    <orderEntry type="library" name="Gradle: commons-collections:commons-collections:3.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.hibernate:hibernate-commons-annotations:3.2.0.Final" level="project" />
-    <orderEntry type="library" name="Gradle: org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.0.Final" level="project" />
-    <orderEntry type="library" name="Gradle: javax.transaction:jta:1.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.6.1" level="project" />
   </component>
 </module>

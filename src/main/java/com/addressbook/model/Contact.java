@@ -6,25 +6,14 @@ import java.util.List;
 /**
  * Created by birsan on 4/11/2016.
  */
-@Entity
-@Table(name = "ADDRESSBOOK_CONTACTS")
 public class Contact {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator ="contacts_sequence")
-    @Column(name = "AC_CONTACT_ID")
+
     private Integer id;
-    @Column(name = "AC_FIRST_NAME")
     private String firstName;
-    @Column(name = "AC_LAST_NAME")
     private String lastName;
-    @Column(name = "AC_COMPANY")
     private String company;
-    @Column(name = "AC_CONTENT_TYPE")
     private String contentType;
-    @Column(name = "AC_PHOTO")
     private byte[] photo;
-    @OneToMany
-    @JoinColumn(name="AP_CONTACT_ID")
     private List<PhoneNumber> phoneNumbers;
 
     public String getContentType() {
