@@ -19,7 +19,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String authorizationHeader = requestContext.getHeaderString("AuthToken");
-        if (!requestContext.getUriInfo().getRequestUri().getPath().equals("/addressbook/user/authenticate")) {
+        if ((!requestContext.getUriInfo().getRequestUri().getPath().equals("/addressbook/user/authenticate"))) {
             if (authorizationHeader == null) {
                 throw new NotAuthorizedException("Missing header!");
             } else if (authorizationHeader.isEmpty()) {

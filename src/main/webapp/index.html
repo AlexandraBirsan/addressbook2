@@ -28,8 +28,9 @@
     </thead>
 </table>
 <button id="visibleCreate">Contact Form</button>
-<!--<button id="exportData" onclick="exportData()">Export data</button>-->
-<a href="addressbook/api/contacts/file">Export Data</a>
+<button id="activateExportLink" onclick="exportFile()">Generate download link</button>
+<br><br>
+<a id="export" download="export.txt" onclick="hideDownloadLink()" style="display: none">Contacts list in txt format</a>
 <br><br>
 
 <div id="ContactDiv">
@@ -52,7 +53,7 @@
         </tr>
         <tr>
         <td><label>Profile Photo</label></td>
-        <td><input type="file"/></td>
+        <td><input id="contactPhoto" type="file" accept="image/*"/></td>
         </tr>
         <tr>
             <td><label for="phoneNumTable">PhoneNumber</label></td>

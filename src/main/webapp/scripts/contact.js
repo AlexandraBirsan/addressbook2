@@ -11,6 +11,8 @@ function createOrUpdateContact() {
     var id = $('#id').val();
     var rawPhoneNumbers = getPhoneNumbers();
     var phoneNumbers = [];
+    var photo=$("#contactPhoto").val();
+    var file=photo.files[0];
     for (var i = 0; i < rawPhoneNumbers.length; i++) {
         phoneNumbers[i] = {"number": rawPhoneNumbers[i]}
     }
@@ -93,7 +95,7 @@ function loadDataTable() {
             {
                 "data": null,
                 "render": function (object) {
-                    return '<button  data-id="' + object.id + '" onclick="invokeDeleteContact(this)">' + 'Delete' + '</button>';
+                    return '<button  data-id="' + object.id + '" onclick="invokeDeleteContact(this)" class=' + "deleteButton"+'>' + 'Delete' + '</button>';
                 }
             }
         ],

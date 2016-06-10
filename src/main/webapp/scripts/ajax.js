@@ -54,3 +54,39 @@ function invokeDeleteContact(object) {
     });
 }
 
+function exportFile(){
+        $.ajax({
+            url:"addressbook/api/contacts/file",
+            type:'GET',
+            headers: { "AuthToken": getCookie(COOKIE_NAME)},
+            processData:false,
+            success:function resolve(result) {
+                //$("#export").attr('href',result);
+                //window.location.href =result;
+                $('#export').attr('href',"data:application/octet-stream;base64," + result).show();
+            },
+            error:function (){
+                alert("error");
+            }
+        });
+}
+
+function hideDownloadLink(){
+    $('#export').hide();
+}
+
+$(document).ready(function func(){
+    $("#visibleCreate").click(function(){
+        $('#export').hide();
+    });
+    $("#submit").click(function(){
+        $('#export').hide();
+    });
+    $(".editButton").click(function(){
+        $('#export').hide();
+    });
+    $(".deleteButton").click(function(){
+        $('#export').hide();
+    });
+})
+;

@@ -7,6 +7,7 @@ import com.addressbook.model.Contact;
 import com.addressbook.model.Credentials;
 import com.addressbook.model.User;
 import com.addressbook.validators.ContactValidator;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,10 +16,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -115,7 +114,7 @@ public class ContactsWebService {
 
     @GET
     @Path("/file")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    //@Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getFile() {
         try {
             File temp = File.createTempFile(FILE_NAME, FILE_EXTENSION);
@@ -128,8 +127,10 @@ public class ContactsWebService {
                 bufferedWriter.newLine();
             }
             bufferedWriter.close();
-            Response.ResponseBuilder response = Response.ok(temp);
-            response.header(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + temp.getName());
+          //  Response.ResponseBuilder response = Response.ok(temp);
+            byte[] encoded=Base64.getEncoder().encode(FileUtils.readFileToByteArray(temp));
+            Response.ResponseBuilder response=Response.ok(encoded);
+            //response.header(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + temp.getName());
             return response.build();
         } catch (IOException e) {
             e.printStackTrace();

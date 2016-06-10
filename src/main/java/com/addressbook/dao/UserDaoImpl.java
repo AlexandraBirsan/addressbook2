@@ -28,7 +28,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getUser(User user) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(User.class).add(Restrictions.eq("username", user.getUsername()));
+        Criteria criteria = session.createCriteria(User.class).add(Restrictions.eq("username", user.getUsername())).add(Restrictions.eq("password",user.getPassword()));
         User userDb = (User) criteria.list().get(0);
         return userDb;
     }
