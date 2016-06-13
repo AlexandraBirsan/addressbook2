@@ -3,6 +3,8 @@
  */
 var AUTH_TOKEN = "AuthToken";
 var INPUT_WITH_ADD_BUTTON = "<input type='button' onclick='addPhoneNumber()' value='+'/>"
+var currentEncodedPhoto;
+var currentContentType;
 
 function createOrUpdateContact() {
     var firstName = $('#firstName').val();
@@ -11,14 +13,14 @@ function createOrUpdateContact() {
     var id = $('#id').val();
     var rawPhoneNumbers = getPhoneNumbers();
     var phoneNumbers = [];
-    var photo=$("#contactPhoto").val();
-    var file=photo.files[0];
+
     for (var i = 0; i < rawPhoneNumbers.length; i++) {
         phoneNumbers[i] = {"number": rawPhoneNumbers[i]}
     }
     var data = {
         "id": id, "firstName": firstName, "lastName": lastName,
-        "company": company, "phoneNumbers": phoneNumbers
+        "company": company, "phoneNumbers": phoneNumbers,
+        "photo": currentEncodedPhoto, "contentType": currentContentType
     };
 
     if (id === "") {
@@ -43,6 +45,8 @@ function loadContactData(object) {
     var lastName = object.getAttribute("data-last-name");
     var id = object.getAttribute("data-id");
     var phoneNumber = object.getAttribute("data-phone-number");
+    var photo = object.getAttribute("data-photo");
+    var contentType = object.getAttribute("data-content-type");
     $('#company').val(company);
     $('#firstName').val(firstName);
     $('#lastName').val(lastName);
@@ -64,20 +68,21 @@ function loadContactData(object) {
                 }
             }
         }
+        $('#previewContactPhoto').attr("src", "data:" + contentType + ";base64," + photo);
+        $('#previewContactPhoto').show();
     }
     $('#ContactDiv').show();
     $('errorsDiv').hide();
 }
 
 
-
 function loadDataTable() {
     $('#listTable').DataTable({
         "processing": true,
         "serverSide": false,
-        "ajax":{
+        "ajax": {
             url: "addressbook/api/contacts",
-            headers: {  "AuthToken": getCookie(COOKIE_NAME)}
+            headers: {"AuthToken": getCookie(COOKIE_NAME)}
         },
         "columns": [
             {"data": "company"},
@@ -88,14 +93,27 @@ function loadDataTable() {
             {
                 "data": null,
                 "render": function (object) {
+                    if (object && object.contentType) {
+                        return "<img src='data:" + object.contentType + ";base64," + object.photo + "' height='80' alt='image'>";
+                    } else {
+                        return "<img src='' height='60' alt='image'>";
+                    }
+
+                }
+            },
+            {"data": "contentType"},
+            {
+                "data": null,
+                "render": function (object) {
                     return '<button data-company="' + object.company + '" data-first-name="' + object.firstName + '" data-last-name="' + object.lastName + '" data-id="' + object.id +
-                        '"data-phone-number="' + object.phoneNumber + '" onclick="loadContactData(this)" class=' + "editButton" + '>' + 'Edit' + '</button>';
+                        '"data-phone-number="' + object.phoneNumber + '" data-content-type="' + object.contentType + '" data-photo="' + object.photo +
+                        '" onclick="loadContactData(this)" class=' + "editButton" + '>' + 'Edit' + '</button>';
                 }
             },
             {
                 "data": null,
                 "render": function (object) {
-                    return '<button  data-id="' + object.id + '" onclick="invokeDeleteContact(this)" class=' + "deleteButton"+'>' + 'Delete' + '</button>';
+                    return '<button  data-id="' + object.id + '" onclick="invokeDeleteContact(this)" class=' + "deleteButton" + '>' + 'Delete' + '</button>';
                 }
             }
         ],
@@ -111,7 +129,17 @@ function loadDataTable() {
                 "searchable": true
             },
             {
-                "targets":[2],
+                "targets": [2],
+                "visible": false,
+                "searchable": false
+            },
+            {
+                "targets": [5],
+                "visible": true,
+                "searchable": false
+            },
+            {
+                "targets": [6],
                 "visible": false,
                 "searchable": false
             }],
@@ -140,6 +168,17 @@ function reloadDataTable() {
 function gotThis() {
     $('#errors').text("");
     $('#errorsDiv').hide();
+}
+
+function getEncodedPhotoAndContentType() {
+    var file = document.querySelector('input[type=file]').files[0];
+    var reader = new FileReader();
+    reader.onload = function (readerEvt) {
+        var binaryString = readerEvt.target.result;
+        currentEncodedPhoto = (btoa(binaryString));
+        currentContentType = file.type;
+    };
+    reader.readAsBinaryString(file);
 }
 
 $(document).ready(function () {

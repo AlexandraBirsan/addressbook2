@@ -20,8 +20,4 @@
     <bean id="contactDaoMock" class="com.addressbook.EasyMockNiceCreator">
         <property name="iface" value="com.addressbook.dao.ContactsDaoImpl"/>
     </bean>
-    <bean id="phoneNumberDaoImpl" class="com.addressbook.EasyMockNiceCreator">
-        <property name="iface" value="com.addressbook.dao.PhoneNumberDaoImpl"/>
-    </bean>
-
 </beans>

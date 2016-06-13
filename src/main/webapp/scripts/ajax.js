@@ -66,7 +66,7 @@ function exportFile(){
                 $('#export').attr('href',"data:application/octet-stream;base64," + result).show();
             },
             error:function (){
-                alert("error");
+                alert(GENERIC_ERROR_MESSAGE);
             }
         });
 }

@@ -5,3 +5,4 @@
 
 var COOKIE_NAME = "userCookie";
 var AUTH_TOKEN = "AuthToken";
+var GENERIC_ERROR_MESSAGE = "An error has ocurred.";

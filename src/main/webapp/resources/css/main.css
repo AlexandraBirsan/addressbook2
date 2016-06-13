@@ -1,24 +1,33 @@
 table {
     border-collapse: collapse;
 }
+
 table, td, th {
     border: 1px solid black;
 }
 
-.photo{
+.photo {
     max-height: 20px;
 }
-#errors{
+
+#errors {
     color: red;
 }
-.welcomeMessage{
+
+.welcomeMessage {
     color: red;
     font-size: 50px;
     font-family: cursive;
 }
+
 #ContactDiv {
     display: none;
 }
-#errorsDiv{
+
+#errorsDiv {
+    display: none;
+}
+
+#previewContactPhoto {
     display: none;
 }

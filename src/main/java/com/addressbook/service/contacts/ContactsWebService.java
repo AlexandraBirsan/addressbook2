@@ -2,20 +2,17 @@ package com.addressbook.service.contacts;
 
 import com.addressbook.dto.AllContactResponseDto;
 import com.addressbook.dto.ContactDto;
+import com.addressbook.dto.CreateContactDto;
 import com.addressbook.exceptions.ValidationException;
 import com.addressbook.model.Contact;
-import com.addressbook.model.Credentials;
-import com.addressbook.model.User;
 import com.addressbook.validators.ContactValidator;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import java.io.*;
 import java.util.Base64;
 import java.util.List;
@@ -54,8 +51,8 @@ public class ContactsWebService {
     @Produces(MediaType.APPLICATION_JSON)
     public AllContactResponseDto getAll() {
         try {
-                List<ContactDto> contacts = contactDtoUtils.getContacts();
-                AllContactResponseDto responseDTO = new AllContactResponseDto();
+            List<ContactDto> contacts = contactDtoUtils.getContacts();
+            AllContactResponseDto responseDTO = new AllContactResponseDto();
             responseDTO.setData(contacts);
             return responseDTO;
         } catch (Exception ex) {
@@ -67,8 +64,9 @@ public class ContactsWebService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response create(Contact contact) {
+    public Response create(CreateContactDto createContactDto) {
         try {
+            Contact contact = buildContactFromDto(createContactDto);
             contactValidator.validateContact(contact);
             contactsService.createContact(contact);
             return Response.status(Response.Status.OK).entity(CONTACT_CREATED).build();
@@ -79,6 +77,20 @@ public class ContactsWebService {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(CONTACT_NOT_CREATED + ex.getMessage()).build();
         }
+    }
+
+    private Contact buildContactFromDto(CreateContactDto createContactDto) {
+        Contact contact = new Contact();
+        contact.setId(createContactDto.getId());
+        contact.setCompany(createContactDto.getCompany());
+        contact.setContentType(createContactDto.getContentType());
+        contact.setFirstName(createContactDto.getFirstName());
+        contact.setLastName(createContactDto.getLastName());
+        contact.setPhoneNumbers(createContactDto.getPhoneNumbers());
+        if (createContactDto.getPhoto() != null) {
+            contact.setPhoto(Base64.getDecoder().decode(createContactDto.getPhoto()));
+        }
+        return contact;
     }
 
     @PUT
@@ -127,9 +139,9 @@ public class ContactsWebService {
                 bufferedWriter.newLine();
             }
             bufferedWriter.close();
-          //  Response.ResponseBuilder response = Response.ok(temp);
-            byte[] encoded=Base64.getEncoder().encode(FileUtils.readFileToByteArray(temp));
-            Response.ResponseBuilder response=Response.ok(encoded);
+            //  Response.ResponseBuilder response = Response.ok(temp);
+            byte[] encoded = Base64.getEncoder().encode(FileUtils.readFileToByteArray(temp));
+            Response.ResponseBuilder response = Response.ok(encoded);
             //response.header(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + temp.getName());
             return response.build();
         } catch (IOException e) {

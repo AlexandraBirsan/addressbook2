@@ -2,6 +2,7 @@ package com.addressbook;
 
 import com.addressbook.dto.AllContactResponseDto;
 import com.addressbook.dto.ContactDto;
+import com.addressbook.dto.CreateContactDto;
 import com.addressbook.exceptions.ValidationException;
 import com.addressbook.model.Contact;
 import com.addressbook.model.PhoneNumber;
@@ -61,7 +62,7 @@ public class ContactWebTest {
     @Test
     public void createValidContact() {
         Contact contact = dummyContact();
-        Response actualResponse = contactsWebService.create(contact);
+        Response actualResponse = contactsWebService.create(dummyContactDto());
         Assert.assertEquals(200, actualResponse.getStatus());
     }
 
@@ -72,7 +73,7 @@ public class ContactWebTest {
         contactsServiceMock.createContact(contact);
         EasyMock.expectLastCall().andThrow(new RuntimeException("simulated Exception"));
         EasyMock.replay(contactsServiceMock);
-        Response actualResponse = contactsWebService.create(contact);
+        Response actualResponse = contactsWebService.create(dummyContactDto());
         Assert.assertEquals(500, actualResponse.getStatus());
     }
 
@@ -84,7 +85,7 @@ public class ContactWebTest {
         contactsValidatorMock.validateContact(contact);
         EasyMock.expectLastCall().andThrow(new ValidationException());
         EasyMock.replay(contactsValidatorMock);
-        Response actualResp = contactsWebService.create(contact);
+        Response actualResp = contactsWebService.create(dummyContactDto());
         Assert.assertEquals(409, actualResp.getStatus());
     }
 
@@ -106,7 +107,7 @@ public class ContactWebTest {
         contactsValidatorMock.validateContact(contact);
         EasyMock.expectLastCall().andThrow(new ValidationException());
         EasyMock.replay(contactsValidatorMock);
-        Assert.assertEquals(409, contactsWebService.create(contact).getStatus());
+        Assert.assertEquals(409, contactsWebService.create(dummyContactDto()).getStatus());
     }
 
     @Test
@@ -135,6 +136,21 @@ public class ContactWebTest {
         contact.setFirstName(VALID_NAME);
         contact.setCompany(VALID_COMPANY);
         contact.setPhoneNumbers(phoneNumbers);
+        return contact;
+    }
+
+    private CreateContactDto dummyContactDto() {
+        List<PhoneNumber> phoneNumbers = new ArrayList<>();
+        PhoneNumber number = new PhoneNumber();
+        number.setNumber(VALID_PHONE_NUMBER);
+        phoneNumbers.add(number);
+        CreateContactDto contact = new CreateContactDto();
+        contact.setLastName(VALID_NAME);
+        contact.setFirstName(VALID_NAME);
+        contact.setCompany(VALID_COMPANY);
+        contact.setPhoneNumbers(phoneNumbers);
+        contact.setPhoto("");
+        contact.setContentType("");
         return contact;
     }
 }

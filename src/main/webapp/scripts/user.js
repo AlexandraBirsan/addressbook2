@@ -16,7 +16,7 @@ function login(){
                 window.location="index.html";
         },
         error: function (response) {
-            alert("error");
+            alert(GENERIC_ERROR_MESSAGE);
         }
     });
 }

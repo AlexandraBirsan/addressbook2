@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -28,12 +29,16 @@ public class ContactDtoUtils {
             contactDto.setFirstName(contact.getFirstName());
             contactDto.setPhoneNumber(buildPhoneNumber(contact));
             contactDto.setId(contact.getId());
+            if (contact.getPhoto() != null) {
+                contactDto.setPhoto(Base64.getEncoder().encodeToString(contact.getPhoto()));
+                contactDto.setContentType(contact.getContentType());
+            }
             contactDtos.add(contactDto);
         });
         return contactDtos;
     }
 
-    private static String buildPhoneNumber(Contact contact) {
+    private String buildPhoneNumber(Contact contact) {
         String phoneNum = "";
         for (PhoneNumber number : contact.getPhoneNumbers()) {
             phoneNum += number.getNumber() + ", ";
