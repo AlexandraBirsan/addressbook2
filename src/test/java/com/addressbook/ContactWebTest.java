@@ -68,9 +68,8 @@ public class ContactWebTest {
 
     @Test
     public void createInvalidContactWithExceptionThrown() {
-        Contact contact = dummyContact();
         EasyMock.reset(contactsServiceMock);
-        contactsServiceMock.createContact(contact);
+        contactsServiceMock.createContact(EasyMock.anyObject());
         EasyMock.expectLastCall().andThrow(new RuntimeException("simulated Exception"));
         EasyMock.replay(contactsServiceMock);
         Response actualResponse = contactsWebService.create(dummyContactDto());
@@ -80,9 +79,8 @@ public class ContactWebTest {
 
     @Test
     public void createInvalidContactWithValidationExceptionThrown() {
-        Contact contact = dummyContact();
         EasyMock.reset(contactsValidatorMock);
-        contactsValidatorMock.validateContact(contact);
+        contactsValidatorMock.validateContact(EasyMock.anyObject());
         EasyMock.expectLastCall().andThrow(new ValidationException());
         EasyMock.replay(contactsValidatorMock);
         Response actualResp = contactsWebService.create(dummyContactDto());
@@ -107,7 +105,7 @@ public class ContactWebTest {
         contactsValidatorMock.validateContact(contact);
         EasyMock.expectLastCall().andThrow(new ValidationException());
         EasyMock.replay(contactsValidatorMock);
-        Assert.assertEquals(409, contactsWebService.create(dummyContactDto()).getStatus());
+        Assert.assertEquals(409, contactsWebService.update(contact).getStatus());
     }
 
     @Test
@@ -151,6 +149,15 @@ public class ContactWebTest {
         contact.setPhoneNumbers(phoneNumbers);
         contact.setPhoto("");
         contact.setContentType("");
+        return contact;
+    }
+    private Contact buildContactFromDto(CreateContactDto createContactDto) {
+        Contact contact = new Contact();
+        contact.setId(createContactDto.getId());
+        contact.setCompany(createContactDto.getCompany());
+        contact.setFirstName(createContactDto.getFirstName());
+        contact.setLastName(createContactDto.getLastName());
+        contact.setPhoneNumbers(createContactDto.getPhoneNumbers());
         return contact;
     }
 }
